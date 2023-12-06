@@ -27,21 +27,33 @@ def sign_up(username, password):
 
 def login(username, password):
     # Retrieve data
-    c.execute('SELECT * FROM users WHERE username=? AND password=?', (username, password))
-    return c.fetchone() is not None
+    c.execute('SELECT * FROM users WHERE username=?', (username,))
+    result = c.fetchone()
+    if result is None:
+        return 'Sign up first'
+    elif result[1] != password:
+        return 'Incorrect password'
+    else:
+        return True
 
 
 pygame.init()
-
 win = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Login Page")
 font = pygame.font.Font(None, 32)
-username_rect = pygame.Rect(540, 280, 200, 32)  # Modified location for username
-password_rect = pygame.Rect(540, 320, 200, 32)  # Modified location for password
-login_rect = pygame.Rect(590, 360, 100, 32)  # Modified location for login
-signup_rect = pygame.Rect(590, 400, 100, 32)  # New location for signup
-color_inactive = pygame.Color('lightskyblue3')
-color_active = pygame.Color('dodgerblue2')
+
+# Define the new colours
+background_color = pygame.Color('#36413E')
+box_color = pygame.Color('#5D5E60')
+color_inactive = pygame.Color('#8D8D92')
+color_active = pygame.Color('#BEB2C8')
+
+username_rect = pygame.Rect(540, 280, 400, 50) 
+password_rect = pygame.Rect(540, 340, 400, 50) 
+login_rect = pygame.Rect((1280 - 150) / 2, 400, 150, 50) 
+signup_rect = pygame.Rect((1280 - 150) / 2, 460, 150, 50) 
+
+background_image = pygame.image.load(r"C:\Users\Dylan\OneDrive\Documents\NEA_Computer_Science\images\D2 PNG (7).png")
 color_username = color_inactive
 color_password = color_inactive
 active_username = False
@@ -51,10 +63,13 @@ password = 'Password'
 done = False
 message = ''
 
+
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+            continue
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if username_rect.collidepoint(event.pos):
@@ -74,14 +89,17 @@ while not done:
                     password = ''  # Clear the password text
 
             # Check if the login button is clicked
+            # Check if the login button is clicked
             elif login_rect.collidepoint(event.pos):
                 if username == 'Username' or password == 'Password':
                     message = 'Please enter a valid username or password.'
-                elif login(username, password):
-                    import menu_screen
-                    done = True  # Close the login window
                 else:
-                    message = 'Please sign up first.'
+                    login_result = login(username, password)
+                    if login_result == True:
+                        import menu_screen
+                        done = True  # Close the login window
+                    else:
+                        message = login_result
 
         	# Check if the signup button is clicked
             elif signup_rect.collidepoint(event.pos):
@@ -104,35 +122,52 @@ while not done:
             if active_username:
                 if event.key == pygame.K_BACKSPACE:
                     username = username[:-1]
-                else:
+                elif event.key != pygame.K_RETURN:  # Add this condition
                     username += event.unicode
             if active_password:
                 if event.key == pygame.K_BACKSPACE:
                     password = password[:-1]
-                else:
+                elif event.key != pygame.K_RETURN:  # Add this condition
                     password += event.unicode
             if event.key == pygame.K_RETURN:
-                print(username, password)
-                username = 'Username'
-                password = 'Password'
+                active_username = False
+                active_password = False
+                color_username = color_inactive
+                color_password = color_inactive
 
-    win.fill((30, 30, 30))
-    username_surface = font.render(username, True, color_username)
+    win.blit(background_image, (0, 0))
+
+    pygame.draw.rect(win, box_color, username_rect)
+    pygame.draw.rect(win, box_color, password_rect)
+
+    # Render the username and password text with the appropriate color
+    if username != 'Username':
+        username_surface = font.render(username, True, color_password)  # Use color_password for username text
+    else:
+        username_surface = font.render(username, True, color_inactive)
+    if password != 'Password':
+        password_surface = font.render('*' * len(password), True, color_password)
+    else:
+        password_surface = font.render(password, True, color_inactive)
+
     width = max(200, username_surface.get_width() + 10)
     username_rect.w = width
     win.blit(username_surface, (username_rect.x + 5, username_rect.y + 5))
     pygame.draw.rect(win, color_username, username_rect, 2)
-    if password != 'Password':
-        password_surface = font.render('*' * len(password), True, color_password)
-    else:
-        password_surface = font.render(password, True, color_password)
+
     width = max(200, password_surface.get_width() + 10)
     password_rect.w = width
     win.blit(password_surface, (password_rect.x + 5, password_rect.y + 5))
     pygame.draw.rect(win, color_password, password_rect, 2)
+
+    # Draw the login button
+    pygame.draw.rect(win, box_color, login_rect)  # Add this line
     login_surface = font.render('LOGIN', True, color_inactive)
     win.blit(login_surface, (login_rect.x + 5, login_rect.y + 5))
     pygame.draw.rect(win, color_inactive, login_rect, 2)
+
+    # Draw the signup button
+    pygame.draw.rect(win, box_color, signup_rect)  # Add this line
     signup_surface = font.render('SIGN UP', True, color_inactive)
     win.blit(signup_surface, (signup_rect.x + 5, signup_rect.y + 5))
     pygame.draw.rect(win, color_inactive, signup_rect, 2)
