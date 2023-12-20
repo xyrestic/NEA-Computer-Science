@@ -1,0 +1,26 @@
+133 - log
+214 - rock
+244 - ore
+
+180 - dark grass
+181 - light grass
+
+77 - hay top
+78 - hay top
+79 - hay top
+93 - hay mid
+94 - hay mid
+95 - hay mid
+109 - hay bottom
+110 - hay bottom
+111 - hay bottom
+
+199 - snowrock
+221 - snowball
+
+144 - poison thick stump bottom left
+145 - poison thick stump bottom right
+128 - poison thick stump top left
+129 - poison thick stump top right
+
+148 - dead tree

@@ -1,0 +1,12 @@
+how the camera works:
+by default, i always draw the sprite image in the same position as sprite rectangle, but i can give sprite rectangle offset, which i will use for the camera, using Vector2.
+
+for sprite in self.sprites():
+	self.display_surface.blit(sprite.image,sprite.rect)
+
+->
+
+for sprite in self.sprites():
+	self.display_surface.blit(sprite.image,sprite.rect+offset)
+
+offset comes from player, then connect to sprite.rect vector. essentially i will give offset of the world to wherever the palyer is going to be
