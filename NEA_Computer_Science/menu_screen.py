@@ -1,6 +1,4 @@
-import pygame
-import time
-import sys
+import pygame, time, sys ,subprocess, os
 
 # initialize pygame
 pygame.init()
@@ -39,11 +37,11 @@ def start_menu_screen():
     # Load the frames of the GIF
     FPS = 3
     NUM_FRAMES = 3
-    frames = [pygame.image.load(f'C:\\Users\\Dylan\\OneDrive\\Documents\\NEA_Computer_Science\\images\\bg{i}.png') for i in range(NUM_FRAMES)]
+    frames = [pygame.image.load(fr"C:\Users\Dylan\OneDrive\Documents\NEA_Computer_Science\images\bg{i}.png") for i in range(NUM_FRAMES)]
     frame_num = 0
 
     # Create a font object for the title
-    title_font = pygame.font.Font(r"C:\\Users\\Dylan\\OneDrive\\Documents\\NEA_Computer_Science\\fonts\\Hamston.ttf", 100)  # Decrease the font size to 100
+    title_font = pygame.font.Font(r"C:\Users\Dylan\OneDrive\Documents\NEA_Computer_Science\fonts\Hamston.ttf", 100)  # Decrease the font size to 100
 
     # Create a surface for the title
     title_text = "MATHS PURSUIT"
@@ -88,6 +86,18 @@ def start_menu_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # Check for a mouse click
+                if event.button == 1:  # Check if the left mouse button was clicked
+                    for button in buttons:
+                        if button.rect.collidepoint(event.pos):  # Check if the button was clicked
+                            if button.text_input == "Quit":
+                                pygame.quit()
+                                sys.exit()
+                            elif button.text_input == "Play":
+                                subprocess.Popen(["python", r"C:\Users\Dylan\OneDrive\Documents\NEA_Computer_Science\play_button\play.py"])
+                                pygame.display.quit()
+                                pygame.quit()
+                                os._exit(0)
 
         # Get the current mouse position
         mouse_pos = pygame.mouse.get_pos()
